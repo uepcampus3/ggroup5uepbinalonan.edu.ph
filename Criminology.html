@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UEP - criminology</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<style>
+    /* --- Variables & Reset --- */
+    :root {
+      --primary-blue: #004080;
+      --secondary-blue: #003366;
+      --accent-gold: #ffd700;
+      --accent-red: #d32f2f;
+      --light-bg: #f9f9f9;
+      --white: #ffffff;
+      --transition: all 0.3s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', 'Inter', sans-serif;
+      line-height: 1.6;
+      background: var(--light-bg);
+      color: #333;
+      /* Increased padding to account for the floating header gap */
+      padding-top: 100px; 
+    }
+
+    /* --- 2. Floating Header Design --- */
+    header {
+      /* Translucent Background & Glassmorphism */
+      background: rgba(0, 64, 128, 0.95); 
+      backdrop-filter: blur(10px);
+      
+      color: var(--white);
+      padding: 0 3%;
+      height: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      /* Floating Effect */
+      position: fixed;
+      top: 15px;      /* Gap from the top */
+      left: 2.5%;     /* Gap from the left */
+      width: 95%;     /* Narrower than screen */
+      z-index: 1000;
+      
+      /* Rounded Corners & Shadow */
+      border-radius: 50px; 
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: var(--transition);
+    }
+
+     footer {
+      background: var(--primary-blue);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 0.85rem;
+    }
+
+    .logo-text { font-size: 1.2rem; font-weight: bold; }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      align-items: center;
+      gap: 20px;
+      margin-right: 10px;
+    }
+
+    nav a {
+      color: var(--white);
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: 0.95rem;
+    }
+
+    nav a:hover { color: var(--accent-gold); }
+
+    /* Logo with image */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 10px;
+}
+
+.logo-img {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+}
+.logo-img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+}
+
+    /* Dropdown Logic */
+    .dropdown { position: relative; }
+    
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--primary-blue);
+      min-width: 200px;
+      padding: 10px 0;
+      border-radius: 0 0 5px 5px;
+    }
+
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown-menu li { padding: 8px 20px; }
+    .dropdown-menu li:hover { background: var(--secondary-blue); }
+
+    /* Buttons */
+    .btn-enroll {
+      background: var(--accent-red);
+      padding: 8px 18px;
+      border-radius: 4px;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: var(--transition);
+    }
+
+    .btn-enroll:hover { background: #b71c1c; transform: translateY(-2px); }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.8rem;
+      cursor: pointer;
+    }
+
+    /* --- Sections --- */
+    section { padding: 60px 10%; }
+
+    .hero {
+      text-align: center;
+      background: white;
+    }
+
+    .hero h2 { color: var(--accent-red); margin-bottom: 20px; font-size: 2rem; }
+
+    .hero-btns { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
+    
+    .hero-btns button {
+      padding: 12px 25px;
+      border: 1px solid var(--primary-blue);
+      background: transparent;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: var(--transition);
+    }
+
+    .hero-btns button:hover { background: var(--primary-blue); color: white; }
+
+    .events article {
+      background: #f0f8ff;
+      border-left: 5px solid var(--primary-blue);
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 0 5px 5px 0;
+    }
+
+    .contact { background: #eef6ff; text-align: center; }
+
+    footer {
+      background: var(--primary-blue);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 0.85rem;
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 992px) {
+      .menu-toggle { display: block; }
+      
+      nav ul {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        background: var(--primary-blue);
+        padding: 20px;
+      }
+
+      nav ul.active { display: flex; }
+      .dropdown-menu { position: static; display: none; width: 100%; background: var(--secondary-blue); }
+      .dropdown.active .dropdown-menu { display: block; }
+    }
+
+    /* --- Enrollment Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.4); /* Darker backdrop */
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 40px; /* Increased padding */
+      border-radius: 12px; /* Smoother corners */
+      width: 90%;
+      max-width: 550px;
+      position: relative;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    .close-btn {
+      position: absolute;
+      right: 25px;
+      top: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .modal-content h2 {
+      color: var(--primary-blue);
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      text-align: left;
+    }
+
+    #enrollmentForm label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #333;
+    }
+
+    #enrollmentForm input, #enrollmentForm select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    #enrollmentForm input::placeholder { color: #aaa; }
+
+    #enrollmentForm input:focus { border-color: var(--primary-blue); }
+
+    .form-row { display: flex; gap: 15px; }
+    .form-group { flex: 1; }
+
+    /* Logo with image */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+}
+.logo-img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+}
+
+/* Course Banner */
+.course-banner {
+  height: 300px;
+  display: flex;
+  align-items: flex-end;
+  padding: 0;
+  background: url('uep-it-banner.jpg') no-repeat center/cover;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.course-banner h2 {
+  color: white;
+  font-size: 2rem;
+  font-weight: normal;
+  text-shadow: none;
+  background: rgba(34, 74, 134, 0.75);
+  padding: 10px 15px;
+  border-radius: 0;
+  width: 100%;
+  margin: 0;
+}
+  </style>
+
+<body>
+  <header>
+  <div class="logo-container">
+    <img src="seal1.png" alt="UEP Seal" class="logo-img">
+    <div class="logo-text">University of Eastern Pangasinan</div>
+  </div>
+  <button class="menu-toggle" id="mobile-menu">☰</button>
+  <nav>
+    <ul id="nav-list">
+      <li><a href="Group 5.html">Home</a></li>
+      <li class="dropdown">
+        <a href="#">About ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="facilities.html">Facilities</a></li>
+          <li><a href="org-structure.html">Structure</a></li>
+          <li><a href="overview.html">Overview</a></li>
+          <li><a href="seal.html">School Seal</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#">Courses ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="it.html">Information Technology</a></li>
+          <li><a href="hospitality.html">Hospitality Management</a></li>
+          <li><a href="education.html">Education</a></li>
+          <li><a href="Criminology.html">Criminology</a></li>
+        </ul>
+      </li>
+      <li><a href="Contact.html">Contact</a></li>
+      <li><a href="members.html">Members</a></li>
+      <li><button id="enrollBtn" class="btn-enroll">Enroll Now</button></li>
+    </ul>
+  </nav>
+</header>
+
+  <!-- Banner -->
+  <section class="course-banner" style="background:url('crim.jpg') no-repeat center/cover;">
+    <h2>Criminology</h2>
+  </section>
+
+  <!-- Description -->
+  <section class="course-description">
+    <p>The field of criminology is a study of crime and the different agencies of justice as they operate and react to crime, criminals and victims. It is therefore the mission of the Criminology Program to provide the community with professionally competent and morally upright graduates who can deliver efficient and effective services in crime prevention, crime detection and investigation, law enforcement, and custody and rehabilitation of offenders, among other things.</p>
+    <p>The College of Criminology aims:</p>
+    <ul class="criminology-aims">
+      <li>Foster the valued of leadership, integrity, camaraderie, accountability and responsibility while serving their fellowmen, community and country;</li>
+      <li>Elevate the level of patriotism and service to the people, the community and country;</li>
+      <li>Provide scientific knowledge and skills to investigate, analyze and preserve physical evidence relating to the commission of crime as well as identify and present the same in court;</li>
+      <li>Enrich the knowledge of constitutional and human rights to flourish as devoted and law abiding citizens of the country who shall be the model of integrity and trustworthiness; and,</li>
+      <li>Apply most recent researches related to the field of law enforcement, criminal investigation and detection, criminalistics, criminal justice and correctional administration.</li>
+    </ul>
+  </section>
+
+  <footer>
+<p>© 2026 University of Eastern Pangasinan | Designed by Group 5</p>
+  </footer>
+
+<!-- Modal Structure -->
+  <div id="enrollModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2>Enrollment Form</h2>
+      <form id="enrollmentForm">
+        
+        <label>Full Name *</label>
+        <input type="text" placeholder="Enter your full name" required>
+
+        <label>Email Address *</label>
+        <input type="email" placeholder="email@example.com" required>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date of Birth *</label>
+            <input type="date" required>
+          </div>
+          <div class="form-group">
+            <label>Course *</label>
+            <select>
+              <option>BSIT</option>
+              <option>BSHM</option>
+              <option>Education</option>
+              <option>Criminology</option>
+            </select>
+          </div>
+        </div>
+
+        <label>Phone Number *</label>
+        <input type="tel" placeholder="09XXXXXXXXX" required>
+
+        <button type="submit" class="btn-enroll" style="width: 100%; margin-top: 25px; padding: 15px; font-size: 1rem;">Submit Enrollment</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // --- Mobile Menu ---
+    const menuToggle = document.getElementById('mobile-menu');
+    const navList = document.getElementById('nav-list');
+    menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); });
+
+    // --- Modal Logic ---
+    const modal = document.getElementById("enrollModal");
+    const btn = document.getElementById("enrollBtn");
+    const span = document.querySelector(".close-btn");
+
+    btn.onclick = () => { modal.style.display = "block"; document.body.style.overflow = "hidden"; }
+    span.onclick = () => { modal.style.display = "none"; document.body.style.overflow = "auto"; }
+    
+    window.onclick = (event) => {
+      if (event.target == modal) {
+        modal.style.display = "none";
+        document.body.style.overflow = "auto";
+      }
+    }
+  </script>
+</body>
+</html>

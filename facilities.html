@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>University of Eastern Pangasinan</title>
+  <style>
+    /* --- Variables & Reset --- */
+    :root {
+      --primary-blue: #004080;
+      --secondary-blue: #003366;
+      --accent-gold: #ffd700;
+      --accent-red: #d32f2f;
+      --light-bg: #f9f9f9;
+      --white: #ffffff;
+      --transition: all 0.3s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', 'Inter', sans-serif;
+      line-height: 1.6;
+      background: var(--light-bg);
+      color: #333;
+      /* Increased padding to account for the floating header gap */
+      padding-top: 100px; 
+    }
+
+    /* --- 2. Floating Header Design --- */
+    header {
+      /* Translucent Background & Glassmorphism */
+      background: rgba(0, 64, 128, 0.95); 
+      backdrop-filter: blur(10px);
+      
+      color: var(--white);
+      padding: 0 3%;
+      height: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      /* Floating Effect */
+      position: fixed;
+      top: 15px;      /* Gap from the top */
+      left: 2.5%;     /* Gap from the left */
+      width: 95%;     /* Narrower than screen */
+      z-index: 1000;
+      
+      /* Rounded Corners & Shadow */
+      border-radius: 50px; 
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: var(--transition);
+    }
+
+     footer {
+      background: var(--primary-blue);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 0.85rem;
+    }
+
+    .logo-text { font-size: 1.2rem; font-weight: bold; }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      align-items: center;
+      gap: 20px;
+      margin-right: 10px;
+    }
+
+    nav a {
+      color: var(--white);
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: 0.95rem;
+    }
+
+    nav a:hover { color: var(--accent-gold); }
+
+    /* Logo with image */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 10px;
+}
+
+.logo-img {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+}
+.logo-img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+}
+
+    /* Dropdown Logic */
+    .dropdown { position: relative; }
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--primary-blue);
+      min-width: 200px;
+      padding: 10px 0;
+      border-radius: 0 0 5px 5px;
+    }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown-menu li { padding: 8px 20px; }
+    .dropdown-menu li:hover { background: var(--secondary-blue); }
+
+    /* Buttons */
+    .btn-enroll {
+      background: var(--accent-red);
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: var(--transition);
+    }
+    .btn-enroll:hover { background: #b71c1c; transform: translateY(-1px); }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.8rem;
+      cursor: pointer;
+    }
+
+    /* --- Facilities Section --- */
+    .facilities-header { text-align: center; padding: 40px 0 20px; }
+    .facilities-header h1 { font-size: 3rem; letter-spacing: 2px; color: #333; text-transform: uppercase; }
+    .facilities-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      padding: 20px 5%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .facility-item { width: 100%; aspect-ratio: 4 / 3; overflow: hidden; background: #eee; }
+    .facility-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+    .facility-item img:hover { transform: scale(1.05); }
+
+    /* Make item relative for overlay */
+.facility-item {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #eee;
+}
+
+/* Image */
+.facility-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.facility-item:hover img {
+  transform: scale(1.05);
+}
+
+/* NAME OVERLAY */
+.facility-name {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+    .facility-name {
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.facility-item:hover .facility-name {
+  opacity: 1;
+}
+
+    /* --- Enrollment Modal (Styled to match image_584442.png) --- */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.4); /* Darker backdrop */
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 40px; /* Increased padding */
+      border-radius: 12px; /* Smoother corners */
+      width: 90%;
+      max-width: 550px;
+      position: relative;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    .close-btn {
+      position: absolute;
+      right: 25px;
+      top: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .modal-content h2 {
+      color: var(--primary-blue);
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      text-align: left;
+    }
+
+    #enrollmentForm label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #333;
+    }
+
+    #enrollmentForm input, #enrollmentForm select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    #enrollmentForm input::placeholder { color: #aaa; }
+
+    #enrollmentForm input:focus { border-color: var(--primary-blue); }
+
+    .form-row { display: flex; gap: 15px; }
+    .form-group { flex: 1; }
+
+    /* --- Footer --- */
+    footer { 
+      background: var(--primary-blue); 
+      color: white; text-align: center; 
+      padding: 20px; 
+      font-size: 0.85rem; 
+      margin-top: 100px;
+     }
+
+    /* --- Responsive --- */
+    @media (max-width: 992px) {
+      .menu-toggle { display: block; }
+      nav ul { display: none; flex-direction: column; position: absolute; top: 80px; left: 0; width: 100%; background: var(--primary-blue); padding: 20px; }
+      nav ul.active { display: flex; }
+      .facilities-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* Contact Modal Card */
+    .contact-card {
+      background: white;
+      width: 95%; max-width: 850px;
+      display: flex;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+
+    .contact-info-sidebar {
+      background: var(--primary-blue);
+      color: white; padding: 40px;
+      width: 35%; display: flex;
+      flex-direction: column; gap: 25px;
+    }
+
+    .contact-form-area { padding: 40px; width: 65%; background: white; }
+
+    .close-x {
+      position: absolute; cursor: pointer;
+      border: none; background: none; font-size: 28px;
+    }
+    /* Style for Orange X in Platform Modal */
+    .modal-card .close-x {
+      top: -15px; right: -15px; background: #ff9800;
+      color: white; width: 30px; height: 30px; border-radius: 50%; font-size: 18px;
+    }
+    /* Style for Contact Modal X */
+    .contact-card .close-x { top: 15px; right: 20px; color: #333; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+    .input-group { border-bottom: 1px solid #ccc; margin-bottom: 25px; }
+    .input-group input, .input-group textarea {
+      width: 100%; border: none; padding: 10px 0; outline: none; font-size: 0.9rem;
+    }
+
+    .btn-submit-contact {
+      background: black; color: white; width: 100%;
+      padding: 12px; border: none; cursor: pointer;
+      font-weight: bold; text-transform: uppercase;
+    }
+
+    
+    footer { background: var(--primary-blue); color: white; text-align: center; padding: 20px; font-size: 0.85rem; }
+
+    @media (max-width: 992px) {
+      .menu-toggle { display: block; }
+      nav ul {
+        display: none; flex-direction: column; position: absolute;
+        top: 80px; left: 0; width: 100%; background: var(--primary-blue); padding: 20px;
+      }
+      nav ul.active { display: flex; }
+      .dropdown-menu { position: static; display: none; width: 100%; background: var(--secondary-blue); }
+      .dropdown.active .dropdown-menu { display: block; }
+      .bar-content { flex-direction: column; gap: 20px; text-align: center; }
+    }
+
+    @media (max-width: 768px) {
+      .contact-card { flex-direction: column; height: auto; }
+      .contact-info-sidebar, .contact-form-area { width: 100%; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+
+    /* Logo with image */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+}
+.logo-img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+}
+  </style>
+</head>
+<body>
+
+  <header>
+<div class="logo-container">
+  <img src="seal1.png" alt="UEP Seal" class="logo-img">
+  <div class="logo-text">University of Eastern Pangasinan</div>
+</div>
+    <button class="menu-toggle" id="mobile-menu">☰</button>
+    <nav>
+      <ul id="nav-list">
+        <li><a href="Group 5.html">Home</a></li>
+        <li class="dropdown">
+          <a href="#">About ▾</a>
+          <ul class="dropdown-menu">
+            <li><a href="facilities.html">Facilities</a></li>
+            <li><a href="org-structure.html">Structure</a></li>
+            <li><a href="overview.html">Overview</a></li>
+            <li><a href="seal.html">School Seal</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#">Courses ▾</a>
+          <ul class="dropdown-menu">
+            <li><a href="it.html">Information Technology</a></li>
+            <li><a href="hospitality.html">Hospitality Management</a></li>
+            <li><a href="education.html">Education</a></li>
+            <li><a href="Criminology.html">Criminology</a></li>
+          </ul>
+        </li>
+        <li><a href="Contact.html">Contact</a></li>
+        <li><a href="members.html">Members</a></li>
+        <li><button id="enrollBtn" class="btn-enroll">Enroll Now</button></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="facilities-header">
+      <h1>FACILITIES</h1>
+    </section>
+
+    <section class="facilities-grid">
+  
+  <div class="facility-item">
+    <img src="Photo1.jpg" alt="Lab 1">
+    <div class="facility-name"> Computer Laboratory 1</div>
+  </div>
+
+  <div class="facility-item">
+    <img src="Photo2.jpg" alt="Lab 2">
+    <div class="facility-name"> Computer Laboratory 2</div>
+  </div>
+
+  <div class="facility-item">
+    <img src="Photo3.jpg" alt="Lab 3">
+    <div class="facility-name">Library</div>
+  </div>
+
+  <div class="facility-item">
+    <img src="Photo4.jpg" alt="Lab 4">
+    <div class="facility-name">Annex D</div>
+  </div>
+</section>
+  </main>
+
+  <!-- Modal Structure -->
+  <div id="enrollModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2>Enrollment Form</h2>
+      <form id="enrollmentForm">
+        
+        <label>Full Name *</label>
+        <input type="text" placeholder="Enter your full name" required>
+
+        <label>Email Address *</label>
+        <input type="email" placeholder="email@example.com" required>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date of Birth *</label>
+            <input type="date" required>
+          </div>
+          <div class="form-group">
+            <label>Course *</label>
+            <select>
+              <option>BSIT</option>
+              <option>BSHM</option>
+              <option>Education</option>
+              <option>Criminology</option>
+            </select>
+          </div>
+        </div>
+
+        <label>Phone Number *</label>
+        <input type="tel" placeholder="09XXXXXXXXX" required>
+
+        <button type="submit" class="btn-enroll" style="width: 100%; margin-top: 25px; padding: 15px; font-size: 1rem;">Submit Enrollment</button>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 University of Eastern Pangasinan | Designed by Group 5</p>
+  </footer>
+
+  <script>
+    // --- Mobile Menu ---
+    const menuToggle = document.getElementById('mobile-menu');
+    const navList = document.getElementById('nav-list');
+    menuToggle.addEventListener('click', () => { navList.classList.toggle('active'); });
+
+    // --- Modal Logic ---
+    const modal = document.getElementById("enrollModal");
+    const btn = document.getElementById("enrollBtn");
+    const span = document.querySelector(".close-btn");
+
+    btn.onclick = () => { modal.style.display = "block"; document.body.style.overflow = "hidden"; }
+    span.onclick = () => { modal.style.display = "none"; document.body.style.overflow = "auto"; }
+    
+    window.onclick = (event) => {
+      if (event.target == modal) {
+        modal.style.display = "none";
+        document.body.style.overflow = "auto";
+      }
+    }
+  </script>
+</body>
+</html>
